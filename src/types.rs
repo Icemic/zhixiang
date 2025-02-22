@@ -37,14 +37,17 @@ impl<'s, AssetKind: Debug + Copy> Debug for AssetBundle<'s, AssetKind> {
 }
 
 impl<'s, AssetKind: Copy> AssetBundle<'s, AssetKind> {
+    /// Get the number of assets in the bundle
     pub fn assets_count(&self) -> usize {
         self.indices.len()
     }
 
+    /// Get an iterator over the asset indices
     pub fn assets_iter(&self) -> impl Iterator<Item = &AssetIndex<AssetKind>> {
         self.indices.iter()
     }
 
+    /// Get an asset info by path
     pub fn get_asset_index(&self, path: &str) -> Option<&AssetIndex<AssetKind>> {
         self.indices
             .binary_search_by(|probe| probe.path.as_str().cmp(path))
@@ -52,6 +55,7 @@ impl<'s, AssetKind: Copy> AssetBundle<'s, AssetKind> {
             .map(|idx| &self.indices[idx])
     }
 
+    /// Get an asset data by index
     pub fn get_asset_data(&mut self, asset: &AssetIndex<AssetKind>) -> Result<Vec<u8>> {
         self.source
             .seek(SeekFrom::Start(self.data_offset + asset.start))?;
@@ -62,6 +66,7 @@ impl<'s, AssetKind: Copy> AssetBundle<'s, AssetKind> {
         Ok(data)
     }
 
+    /// Get an asset data by path
     pub fn get_asset_data_by_path(&mut self, path: &str) -> Result<Vec<u8>> {
         let (start, size) = {
             let asset = self
@@ -80,6 +85,7 @@ impl<'s, AssetKind: Copy> AssetBundle<'s, AssetKind> {
         Ok(data)
     }
 
+    /// Get both asset index and data by path
     pub fn get_asset(&mut self, path: &str) -> Result<(AssetIndex<AssetKind>, Vec<u8>)> {
         let asset = self
             .get_asset_index(path)

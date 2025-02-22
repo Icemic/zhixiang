@@ -3,6 +3,15 @@ use anyhow::Result;
 use crate::constants::*;
 use crate::types::*;
 
+///
+/// Load an asset bundle from a source.
+///
+/// The source can be anything that implements the [std::io::Read] + [std::io::Seek] trait.
+///
+/// Index table will be loaded into memory, but the data will be read on demand for better memory efficiency.
+/// 
+/// See more in [examples/load_binary.rs](examples/load_binary.rs).
+///
 pub fn load<'s, AssetKind: Copy>(mut source: impl ZBox + 's) -> Result<AssetBundle<'s, AssetKind>>
 where
     AssetKind: num_enum::FromPrimitive<Primitive = u8>,

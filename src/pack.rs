@@ -3,6 +3,11 @@ use anyhow::Result;
 use crate::constants::*;
 use crate::types::*;
 
+///
+/// Packer to create an asset bundle.
+/// 
+/// See more in [examples/pack.rs](examples/pack.rs).
+///
 pub struct Packer<AssetKind: Copy> {
     root: std::path::PathBuf,
     indices: Vec<AssetIndex<AssetKind>>,
