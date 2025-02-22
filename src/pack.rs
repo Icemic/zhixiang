@@ -99,7 +99,8 @@ where
 
         // write data
         for index in &self.indices {
-            let mut file = std::fs::File::open(index.path.as_str())?;
+            let p = self.root.join(index.path.as_str());
+            let mut file = std::fs::File::open(&p)?;
             std::io::copy(&mut file, dest)?;
         }
 
