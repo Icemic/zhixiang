@@ -1,5 +1,6 @@
 [package]
 authors = ["Icemic <bingfeng.web@gmail.com>"]
+description = "Multi-platform game assets package format."
 edition = "2021"
 license = "MIT OR Apache-2.0"
 name = "zhixiang"
