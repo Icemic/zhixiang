@@ -39,6 +39,35 @@ where
         self
     }
 
+    pub fn push_dir(&mut self, kind: AssetKind, path: &str, recursive: bool) -> Result<&mut Self> {
+        let dir = self.root.join(path);
+
+        let root_str = {
+            let mut s = self.root.to_str().unwrap().to_string();
+            if !s.ends_with(std::path::MAIN_SEPARATOR) {
+                s.push(std::path::MAIN_SEPARATOR);
+            }
+            s
+        };
+
+        for entry in std::fs::read_dir(dir)? {
+            let entry = entry?;
+            let path = entry.path();
+            let path_str = path.to_str().unwrap();
+
+            // since we use the path returned by read_dir, we can assume that all '\' are separators
+            let relative_path = path_str.strip_prefix(&root_str).unwrap().replace("\\", "/");
+
+            if path.is_file() {
+                self.push(kind, &relative_path);
+            } else if recursive && path.is_dir() {
+                self.push_dir(kind, &relative_path, recursive)?;
+            }
+        }
+
+        Ok(self)
+    }
+
     pub fn ready(&mut self) -> Result<&mut Self> {
         // sort indices by path
         self.indices.sort_by(|a, b| a.path.cmp(&b.path));

@@ -15,14 +15,16 @@ pub enum AssetKind {
 }
 
 fn main() -> Result<()> {
-    let current_dir = std::env::current_dir().unwrap();
-    let mut packer: Packer<AssetKind> = Packer::new(current_dir);
+    let root_dir = std::env::current_dir().unwrap().join("tests/root");
+    let mut packer: Packer<AssetKind> = Packer::new(root_dir);
 
     let mut file = std::fs::File::create("tests/sample.zbox")?;
 
     packer
-        .push(AssetKind::PlainText, "tests/ppp/测试.txt")
-        .push(AssetKind::Image, "logo.png")
+        .push(AssetKind::PlainText, "测试.txt")
+        .push(AssetKind::PlainText, "Lorem Ipsum.txt")
+        .push_dir(AssetKind::Image, "image", true)?
+        .push_dir(AssetKind::Video, "video", false)?
         .ready()?
         .write_to(&mut file)?;
 
